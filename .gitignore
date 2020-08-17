@@ -1,0 +1,11 @@
+# Compiled classes
+out
+*.class
+
+## IntelliJ IDEA
+
+# Modules
+*.iml
+
+# Workspace settings
+.idea
