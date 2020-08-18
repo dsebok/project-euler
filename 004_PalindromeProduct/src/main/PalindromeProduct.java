@@ -5,7 +5,7 @@ public class PalindromeProduct {
     public int findLargestPalindrome(int min, int max) {
         int result = 0;
         for (int i = min; i <= max; i++) {
-            for (int j = min; j <= max; j++) {
+            for (int j = i; j <= max; j++) {
                 int product = i * j;
                 if (product > result) {
                     if (checker.isPalindrome(product)) {
