@@ -1,4 +1,4 @@
-import suppliers.PrimeSupplier;
+package main;
 
 import java.util.ArrayList;
 

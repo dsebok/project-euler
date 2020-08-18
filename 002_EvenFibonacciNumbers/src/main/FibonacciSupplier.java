@@ -1,4 +1,4 @@
-package suppliers;
+package main;
 
 import java.util.function.IntSupplier;
 

@@ -1,4 +1,4 @@
-package suppliers;
+package main;
 
 import java.util.ArrayList;
 import java.util.function.LongSupplier;

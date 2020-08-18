@@ -1,3 +1,5 @@
+package main;
+
 public class SpiralDiagonals {
 
     public long sumDiagonals(int size) {

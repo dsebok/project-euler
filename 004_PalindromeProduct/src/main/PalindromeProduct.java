@@ -1,3 +1,5 @@
+package main;
+
 public class PalindromeProduct {
 
     private PalindromeChecker checker = new PalindromeChecker();
