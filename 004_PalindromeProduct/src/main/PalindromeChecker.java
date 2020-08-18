@@ -5,7 +5,7 @@ public class PalindromeChecker {
         boolean result = true;
         while (builderNumber.length() > 1) {
             char firstChar = getAndDeleteCharAt(builderNumber, 0);
-            char lastChar = getAndDeleteCharAt(builderNumber, builderNumber.length());
+            char lastChar = getAndDeleteCharAt(builderNumber, builderNumber.length()-1);
             if (firstChar != lastChar) {
                 result = false;
             }
