@@ -36,5 +36,12 @@ public class PrimeSupplier implements LongSupplier {
                 .anyMatch(prime -> number % prime == 0);
     }
 
+    public long getCurrent() {
+        return current;
+    }
+
+    public ArrayList<Long> getPrimes() {
+        return primes;
+    }
 
 }
