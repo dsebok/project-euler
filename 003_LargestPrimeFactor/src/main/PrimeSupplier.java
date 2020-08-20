@@ -16,11 +16,11 @@ public class PrimeSupplier implements LongSupplier {
     }
 
     private long getNextPrime() {
-        long result = ++current;
-        while (isDividableByRegisteredPrimes(result)) {
-            result++;
+        long number = ++current;
+        while (!isPrime(number)) {
+            number++;
         }
-        return result;
+        return number;
     }
 
     private void save(long number) {
@@ -28,12 +28,13 @@ public class PrimeSupplier implements LongSupplier {
         primes.add(number);
     }
 
-    private boolean isDividableByRegisteredPrimes(long number) {
+    private boolean isPrime(long number) {
         if (number == 2) {
-            return false;
+            return true;
         }
         return primes.stream()
-                .anyMatch(prime -> number % prime == 0);
+                .filter(prime -> prime <= Math.sqrt(number))
+                .noneMatch(prime -> number % prime == 0);
     }
 
     public long getCurrent() {

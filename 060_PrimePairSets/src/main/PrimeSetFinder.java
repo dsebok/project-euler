@@ -1,5 +1,6 @@
 package main;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class PrimeSetFinder {
@@ -7,7 +8,22 @@ public class PrimeSetFinder {
     private final PrimeSupplier supplier = new PrimeSupplier();
     private final PrimeChecker checker = new PrimeChecker(supplier);
 
-    public boolean isRemarkablePrimeGroup(List<Long> primeGroup) {
+    public long findTheFifthMember() {
+        List<Long> primes = new ArrayList(List.of(3l, 7l, 109l, 673l));
+        while (supplier.getAsLong() < 673l) {}
+        long fifth = supplier.getAsLong();
+        primes.add(fifth);
+        int index = supplier.getPrimes().indexOf(fifth);
+        while (!isRemarkablePrimeGroup(primes)) {
+            index++;
+            fifth = supplier.getPrimes().get(index);
+            primes.set(4, fifth);
+        }
+        return fifth;
+    }
+
+    public boolean isRemarkablePrimeGroup(List<Long> original) {
+        List<Long> primeGroup = new ArrayList<>(original);
         while (primeGroup.size() > 1) {
             long current = primeGroup.remove(0);
             for (long prime : primeGroup) {
@@ -34,5 +50,10 @@ public class PrimeSetFinder {
             }
         }
         return result;
+    }
+
+    public static void main(String[] args) {
+        PrimeSetFinder finder = new PrimeSetFinder();
+        System.out.println(finder.findTheFifthMember());
     }
 }
