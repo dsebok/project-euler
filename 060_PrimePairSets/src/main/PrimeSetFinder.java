@@ -10,13 +10,13 @@ public class PrimeSetFinder {
     private final List<Set<Long>> primePairs = new ArrayList<>();
     private final List<Set<Long>> primeTrios = new ArrayList<>();
     private final List<Set<Long>> primeQuads = new ArrayList<>();
+    private final List<Set<Long>> primePentas = new ArrayList<>();
     private final PrimeSupplier supplier = new PrimeSupplier();
     private final PrimeChecker checker = new PrimeChecker(supplier);
 
     public List<Set<Long>> findPentaPrimes() {
-        List<Set<Long>> pentaPrimes = new ArrayList<>();
         int index = 0;
-        while (pentaPrimes.isEmpty()) {
+        while (primePentas.isEmpty()) {
             long current = getNextPrime(index);
             List<Long> pairsForCurrent = findPairsForCurrent(current);
             saveNewPairs(current, pairsForCurrent);
@@ -25,17 +25,21 @@ public class PrimeSetFinder {
                 List<Set<Long>> duosForCurrent = findDuosForCurrent(pairsForCurrent);
                 saveNewTrios(current, duosForCurrent);
 
-                if (duosForCurrent.size() > 2) {
+                if (pairsForCurrent.size() > 2) {
                     List<Set<Long>> triosForCurrent = findTriosForCurrent(pairsForCurrent);
                     saveNewQuads(current, triosForCurrent);
-                    if (!triosForCurrent.isEmpty()) {
-                        pentaPrimes.addAll(primeQuads);
+
+                    if (pairsForCurrent.size() > 3) {
+                        List<Set<Long>> quadsForCurrent = findQuadsForCurrent(pairsForCurrent);
+                        if (!quadsForCurrent.isEmpty()) {
+                            saveNewPentas(current, quadsForCurrent);
+                        }
                     }
                 }
             }
             ++index;
         }
-        return pentaPrimes;
+        return primePentas;
     }
 
     private List<Long> findPairsForCurrent(long current) {
@@ -56,6 +60,12 @@ public class PrimeSetFinder {
                 .collect(Collectors.toList());
     }
 
+    private List<Set<Long>> findQuadsForCurrent(List<Long> pairsForCurrent) {
+        return primeQuads.stream()
+                .filter(pairsForCurrent::containsAll)
+                .collect(Collectors.toList());
+    }
+
     private void saveNewPairs(long current, List<Long> pairsForCurrent) {
         pairsForCurrent.forEach(prime -> primePairs.add(Set.of(current, prime)));
     }
@@ -69,9 +79,18 @@ public class PrimeSetFinder {
     }
 
     private void saveNewQuads(long current, List<Set<Long>> triosForCurrent) {
-        triosForCurrent.forEach(pair -> {
-            pair.add(current);
-            primeQuads.add(pair);
+        triosForCurrent.forEach(trio -> {
+            Set<Long> quad = new HashSet<>(trio);
+            quad.add(current);
+            primeQuads.add(quad);
+        });
+    }
+
+    private void saveNewPentas(long current, List<Set<Long>> quadsForCurrent) {
+        quadsForCurrent.forEach(quad -> {
+            Set<Long> penta = new HashSet<>(quad);
+            penta.add(current);
+            primePentas.add(penta);
         });
     }
 
