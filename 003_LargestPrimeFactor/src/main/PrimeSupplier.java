@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.function.LongSupplier;
 
 public class PrimeSupplier implements LongSupplier {
-
+//2,3,5,7,11 caches for instant skips
     private long current = 1;
     private final ArrayList<Long> primes = new ArrayList<>();
 
