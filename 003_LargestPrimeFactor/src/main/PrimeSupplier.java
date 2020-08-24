@@ -1,47 +1,41 @@
 package main;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.function.LongSupplier;
 
 public class PrimeSupplier implements LongSupplier {
-//2,3,5,7,11 caches for instant skips
-    private long current = 1;
-    private final ArrayList<Long> primes = new ArrayList<>();
+
+    private int index = 0;
+    private final List<Long> primes = new ArrayList(List.of(2L,3L));
 
     @Override
     public long getAsLong() {
-        long result = getNextPrime();
-        save(result);
-        return result;
+        if (index == primes.size()) {
+            primes.add(getNextPrime());
+        }
+        return primes.get(index++);
     }
 
     private long getNextPrime() {
-        long number = ++current;
+        long number = primes.get(primes.size()-1) + 2;
         while (!isPrime(number)) {
-            number++;
+            number += 2;
         }
         return number;
     }
 
-    private void save(long number) {
-        current = number;
-        primes.add(number);
-    }
-
     private boolean isPrime(long number) {
-        if (number == 2) {
-            return true;
-        }
         return primes.stream()
-                .filter(prime -> prime <= Math.sqrt(number))
+                .filter(prime -> prime*prime <= number)
                 .noneMatch(prime -> number % prime == 0);
     }
 
     public long getCurrent() {
-        return current;
+        return primes.get(index);
     }
 
-    public ArrayList<Long> getPrimes() {
+    public List<Long> getPrimes() {
         return primes;
     }
 
