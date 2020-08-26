@@ -11,9 +11,7 @@ public class PrimeSupplier implements LongSupplier {
 
     @Override
     public long getAsLong() {
-        if (index == primes.size()) {
-            primes.add(getNextPrime());
-        }
+        primes.add(getNextPrime());
         return primes.get(index++);
     }
 
@@ -27,7 +25,7 @@ public class PrimeSupplier implements LongSupplier {
 
     private boolean isPrime(long number) {
         return primes.stream()
-                .filter(prime -> prime*prime <= number)
+                .takeWhile(prime -> prime*prime <= number)
                 .noneMatch(prime -> number % prime == 0);
     }
 

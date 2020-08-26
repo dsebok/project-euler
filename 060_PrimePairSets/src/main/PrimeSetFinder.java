@@ -1,5 +1,7 @@
 package main;
 
+import java.time.Duration;
+import java.time.Instant;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -28,6 +30,13 @@ public class PrimeSetFinder {
                 if (pairsForCurrent.size() > 2) {
                     List<Set<Long>> triosForCurrent = findTriosForCurrent(pairsForCurrent);
                     saveNewQuads(current, triosForCurrent);
+
+                    if (!triosForCurrent.isEmpty()) {
+                        triosForCurrent.forEach(trio -> {
+                            trio.add(current);
+                            System.out.println(trio);
+                        });
+                    }
 
                     if (pairsForCurrent.size() > 3) {
                         List<Set<Long>> quadsForCurrent = findQuadsForCurrent(pairsForCurrent);
@@ -140,7 +149,13 @@ public class PrimeSetFinder {
     }
 
     public static void main(String[] args) {
+        Instant start = Instant.now();
         PrimeSetFinder finder = new PrimeSetFinder();
         System.out.println(finder.findPentaPrimes().get(0));
+        Instant end = Instant.now();
+        Duration duration = Duration.between(start, end);
+        System.out.println(duration.toMillis());
     }
+    //[5701, 8389, 13, 5197, 6733]
+    //4482617 milliseconds
 }
