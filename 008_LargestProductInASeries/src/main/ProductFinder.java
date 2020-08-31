@@ -23,10 +23,28 @@ public class ProductFinder {
             "05886116467109405077541002256983155200055935729725" +
             "71636269561882670428252483600823257530420752963450";
 
+    public long findHighestProduct(String input, int range) {
+        long highest = 0;
+        int index = 0;
+        while (index + range < input.length()) {
+            String scope = input.substring(index, range + index);
+            long current = multiplyDigits(scope);
+            if (current > highest) {
+                highest = current;
+            }
+            ++index;
+        }
+        return highest;
+    }
+
     public long multiplyDigits(String number) {
         return number.chars()
                 .mapToLong(code -> Long.parseLong(Character.toString(code)))
                 .reduce(1L,(a,b) -> a*b);
     }
 
+    public static void main(String[] args) {
+        ProductFinder finder = new ProductFinder();
+        System.out.println(finder.findHighestProduct(NUMBER,13));
+    }
 }
