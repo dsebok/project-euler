@@ -1,6 +1,8 @@
 package main;
 
-import java.util.Arrays;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
 
 public class GridScanner {
 
@@ -26,12 +28,84 @@ public class GridScanner {
             "01 70 54 71 83 51 54 69 16 92 33 48 61 43 52 01 89 19 67 48";
 
     private final int scannerSize;
-    private final int[][] grid;
 
 
-    public GridScanner(int scannerSize, int[][] grid) {
+    public GridScanner(int scannerSize) {
         this.scannerSize = scannerSize;
-        this.grid = grid;
+    }
+
+    public long findGreatestProduct(int[][] grid) {
+        List<Long> products = new ArrayList<>();
+        int gridSize = grid.length;
+        products.add(findGreatestHorizontalProduct(grid, gridSize));
+        products.add(findGreatestVerticalProduct(grid, gridSize));
+        products.add(findGreatestAscendingDiagonalProduct(grid, gridSize));
+        products.add(findGreatestDescendingDiagonalProduct(grid, gridSize));
+        return products.stream().max(Comparator.comparing(Long::valueOf)).get();
+    }
+
+    private long findGreatestHorizontalProduct(int[][] grid, int gridSize) {
+        long greatest = 0;
+        for (int i = 0; i < gridSize; i++) {
+            for (int j = 0; j <= gridSize - scannerSize; j++) {
+                long current = 1;
+                for (int delta = 0; delta < scannerSize; delta++) {
+                    current *= grid[i][j + delta];
+                }
+                if (current > greatest) {
+                    greatest = current;
+                }
+            }
+        }
+        return greatest;
+    }
+
+    private long findGreatestVerticalProduct(int[][] grid, int gridSize) {
+        long greatest = 0;
+        for (int i = 0; i < gridSize; i++) {
+            for (int j = 0; j <= gridSize - scannerSize; j++) {
+                long current = 1;
+                for (int delta = 0; delta < scannerSize; delta++) {
+                    current *= grid[j + delta][i];
+                }
+                if (current > greatest) {
+                    greatest = current;
+                }
+            }
+        }
+        return greatest;
+    }
+
+    private long findGreatestAscendingDiagonalProduct(int[][] grid, int gridSize) {
+        long greatest = 0;
+        for (int i = scannerSize-1; i < gridSize; i++) {
+            for (int j = 0; j <= gridSize - scannerSize; j++) {
+                long current = 1;
+                for (int delta = 0; delta < scannerSize; delta++) {
+                    current *= grid[i - delta][j + delta];
+                }
+                if (current > greatest) {
+                    greatest = current;
+                }
+            }
+        }
+        return greatest;
+    }
+
+    private long findGreatestDescendingDiagonalProduct(int[][] grid, int gridSize) {
+        long greatest = 0;
+        for (int i = 0; i <= gridSize - scannerSize; i++) {
+            for (int j = 0; j <= gridSize - scannerSize; j++) {
+                long current = 1;
+                for (int delta = 0; delta < scannerSize; delta++) {
+                    current *= grid[i + delta][j + delta];
+                }
+                if (current > greatest) {
+                    greatest = current;
+                }
+            }
+        }
+        return greatest;
     }
 
     public static int[][] parse(String rawInput, int size) {
@@ -48,9 +122,7 @@ public class GridScanner {
 
     public static void main(String[] args) {
         int[][] grid = GridScanner.parse(rawInput, 20);
-        GridScanner scanner = new GridScanner(4, grid);
-        for (int[] row : scanner.grid) {
-            System.out.println(Arrays.toString(row));
-        }
+        GridScanner scanner = new GridScanner(4);
+        System.out.println(scanner.findGreatestProduct(grid));
     }
 }
