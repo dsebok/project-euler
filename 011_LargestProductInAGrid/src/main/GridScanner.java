@@ -36,21 +36,40 @@ public class GridScanner {
 
     public long findGreatestProduct(int[][] grid) {
         List<Long> products = new ArrayList<>();
-        int gridSize = grid.length;
-        products.add(findGreatestHorizontalProduct(grid, gridSize));
-        products.add(findGreatestVerticalProduct(grid, gridSize));
-        products.add(findGreatestAscendingDiagonalProduct(grid, gridSize));
-        products.add(findGreatestDescendingDiagonalProduct(grid, gridSize));
+        products.add(findGreatestHorizontalProduct(grid));
+        products.add(findGreatestVerticalProduct(grid));
+        products.add(findGreatestAscendingDiagonalProduct(grid));
+        products.add(findGreatestDescendingDiagonalProduct(grid));
         return products.stream().max(Comparator.comparing(Long::valueOf)).get();
     }
 
-    private long findGreatestHorizontalProduct(int[][] grid, int gridSize) {
+    private long findGreatestHorizontalProduct(int[][] grid) {
+        int gridSize = grid.length;
+        return findGreatestProduct(grid, new Direction(1, 0), new Limits(gridSize - scannerSize + 1, gridSize, 0));
+    }
+
+    private long findGreatestVerticalProduct(int[][] grid) {
+        int gridSize = grid.length;
+        return findGreatestProduct(grid, new Direction(0, 1), new Limits(gridSize, gridSize - scannerSize + 1, 0));
+    }
+
+    private long findGreatestAscendingDiagonalProduct(int[][] grid) {
+        int gridSize = grid.length;
+        return findGreatestProduct(grid, new Direction(1, -1), new Limits(gridSize - scannerSize + 1, gridSize - scannerSize + 1, scannerSize - 1));
+    }
+
+    private long findGreatestDescendingDiagonalProduct(int[][] grid) {
+        int gridSize = grid.length;
+        return findGreatestProduct(grid, new Direction(1, 1), new Limits(gridSize - scannerSize + 1, gridSize - scannerSize + 1, 0));
+    }
+
+    private long findGreatestProduct(int[][] grid, Direction direction, Limits limits) {
         long greatest = 0;
-        for (int i = 0; i < gridSize; i++) {
-            for (int j = 0; j <= gridSize - scannerSize; j++) {
+        for (int row = 0; row < limits.y; row++) {
+            for (int col = 0; col < limits.x; col++) {
                 long current = 1;
                 for (int delta = 0; delta < scannerSize; delta++) {
-                    current *= grid[i][j + delta];
+                    current *= grid[limits.offsetY + row + delta * direction.y][col + delta * direction.x];
                 }
                 if (current > greatest) {
                     greatest = current;
@@ -60,52 +79,28 @@ public class GridScanner {
         return greatest;
     }
 
-    private long findGreatestVerticalProduct(int[][] grid, int gridSize) {
-        long greatest = 0;
-        for (int i = 0; i < gridSize; i++) {
-            for (int j = 0; j <= gridSize - scannerSize; j++) {
-                long current = 1;
-                for (int delta = 0; delta < scannerSize; delta++) {
-                    current *= grid[j + delta][i];
-                }
-                if (current > greatest) {
-                    greatest = current;
-                }
-            }
+    private static class Direction {
+
+        private final int x;
+        private final int y;
+
+        private Direction(int x, int y) {
+            this.x = x;
+            this.y = y;
         }
-        return greatest;
     }
 
-    private long findGreatestAscendingDiagonalProduct(int[][] grid, int gridSize) {
-        long greatest = 0;
-        for (int i = scannerSize-1; i < gridSize; i++) {
-            for (int j = 0; j <= gridSize - scannerSize; j++) {
-                long current = 1;
-                for (int delta = 0; delta < scannerSize; delta++) {
-                    current *= grid[i - delta][j + delta];
-                }
-                if (current > greatest) {
-                    greatest = current;
-                }
-            }
-        }
-        return greatest;
-    }
+    private static class Limits {
 
-    private long findGreatestDescendingDiagonalProduct(int[][] grid, int gridSize) {
-        long greatest = 0;
-        for (int i = 0; i <= gridSize - scannerSize; i++) {
-            for (int j = 0; j <= gridSize - scannerSize; j++) {
-                long current = 1;
-                for (int delta = 0; delta < scannerSize; delta++) {
-                    current *= grid[i + delta][j + delta];
-                }
-                if (current > greatest) {
-                    greatest = current;
-                }
-            }
+        private final int x;
+        private final int y;
+        private final int offsetY;
+
+        private Limits(int x, int y, int offsetY) {
+            this.x = x;
+            this.y = y;
+            this.offsetY = offsetY;
         }
-        return greatest;
     }
 
     public static int[][] parse(String rawInput, int size) {
