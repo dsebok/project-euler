@@ -9,10 +9,10 @@ public class PrimeSummer {
         Instant start = Instant.now();
         PrimeSupplier supplier = new PrimeSupplier();
         long sum = 0;
-        long current = supplier.getAsLong();
+        long current = supplier.get();
         while (current < 2e6) {
             sum += current;
-            current = supplier.getAsLong();
+            current = supplier.get();
         }
         System.out.println(sum);
         Instant end = Instant.now();

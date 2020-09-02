@@ -6,7 +6,6 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class PrimeSetFinderTest {
@@ -19,27 +18,9 @@ public class PrimeSetFinderTest {
     }
 
     @Test
-    public void testAreRemarkablePrimesForWorkingPrimes() {
-        //GIVEN in setup
-        //WHEN
-        boolean actual = underTest.areRemarkablePrimes( 3l,7l);
-        //THEN
-        assertTrue(actual);
-    }
-
-    @Test
-    public void testAreRemarkablePrimesForNotWorkingPrimes() {
-        //GIVEN in setup
-        //WHEN
-        boolean actual = underTest.areRemarkablePrimes( 2l,7l);
-        //THEN
-        assertFalse(actual);
-    }
-
-    @Test
     public void testIsRemarkablePrimeGroupForWorkingPrimeGroup() {
         //GIVEN
-        List<Long> primes = new ArrayList(List.of(3l, 7l, 109l, 673l));
+        List<Integer> primes = List.of(3, 7, 109, 673);
         //WHEN
         boolean actual = underTest.isRemarkablePrimeGroup(primes);
         //THEN
@@ -49,7 +30,7 @@ public class PrimeSetFinderTest {
     @Test
     public void testIsRemarkablePrimeGroupForNotWorkingPrimeGroup() {
         //GIVEN
-        List<Long> primes = new ArrayList(List.of(3l, 7l, 19l, 67l));
+        List<Integer> primes = List.of(3, 7, 19, 67);
         //WHEN
         boolean actual = underTest.isRemarkablePrimeGroup(primes);
         //THEN

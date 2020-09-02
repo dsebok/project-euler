@@ -9,13 +9,11 @@ import org.junit.jupiter.api.Test;
 
 public class PrimeCheckerTest {
 
-    private PrimeSupplier supplier;
     private PrimeChecker underTest;
 
     @BeforeEach
     public void setUp() {
-        supplier = new PrimeSupplier();
-        underTest = new PrimeChecker(supplier);
+        underTest = new PrimeChecker(new PrimeSupplier());
     }
 
     @Test
@@ -42,5 +40,23 @@ public class PrimeCheckerTest {
         assertFalse(actual1);
         assertFalse(actual2);
         assertFalse(actual3);
+    }
+
+    @Test
+    public void testAreRemarkablePrimesForWorkingPrimes() {
+        //GIVEN in setup
+        //WHEN
+        boolean actual = underTest.areRemarkablePrimes( 3,7);
+        //THEN
+        assertTrue(actual);
+    }
+
+    @Test
+    public void testAreRemarkablePrimesForNotWorkingPrimes() {
+        //GIVEN in setup
+        //WHEN
+        boolean actual = underTest.areRemarkablePrimes( 2,7);
+        //THEN
+        assertFalse(actual);
     }
 }

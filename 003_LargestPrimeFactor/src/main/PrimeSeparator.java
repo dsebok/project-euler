@@ -10,13 +10,13 @@ public class PrimeSeparator {
             return result;
         }
         PrimeSupplier supplier = new PrimeSupplier();
-        long currentPrime = supplier.getAsLong();
+        long currentPrime = supplier.get();
         while (number > 1) {
             while (number % currentPrime == 0) {
                 number /= currentPrime;
                 result.add(currentPrime);
             }
-            currentPrime = supplier.getAsLong();
+            currentPrime = supplier.get();
         }
         return result;
     }

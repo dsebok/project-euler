@@ -7,28 +7,26 @@ import java.util.stream.Collectors;
 
 public class PrimeSetFinder {
 
-    private static final List<Long> EXCEPTIONS = List.of(2L, 5L);
-
-    private final List<Set<Long>> primePairs = new ArrayList<>();
-    private final List<Set<Long>> primeTrios = new ArrayList<>();
-    private final List<Set<Long>> primeQuads = new ArrayList<>();
-    private final List<Set<Long>> primePentas = new ArrayList<>();
+    private final List<Set<Integer>> primePairs = new ArrayList<>();
+    private final List<Set<Integer>> primeTrios = new ArrayList<>();
+    private final List<Set<Integer>> primeQuads = new ArrayList<>();
+    private final List<Set<Integer>> primePentas = new ArrayList<>();
     private final PrimeSupplier supplier = new PrimeSupplier();
     private final PrimeChecker checker = new PrimeChecker(supplier);
 
-    public List<Set<Long>> findPentaPrimes() {
+    public List<Set<Integer>> findPentaPrimes() {
         int index = 0;
         while (primePentas.isEmpty()) {
-            long current = getNextPrime(index);
-            List<Long> pairsForCurrent = findPairsForCurrent(current);
+            int current = getNextPrime(index);
+            List<Integer> pairsForCurrent = findPairsForCurrent(current);
             saveNewPairs(current, pairsForCurrent);
 
             if (pairsForCurrent.size() > 1) {
-                List<Set<Long>> duosForCurrent = findDuosForCurrent(pairsForCurrent);
+                List<Set<Integer>> duosForCurrent = findDuosForCurrent(pairsForCurrent);
                 saveNewTrios(current, duosForCurrent);
 
                 if (pairsForCurrent.size() > 2) {
-                    List<Set<Long>> triosForCurrent = findTriosForCurrent(pairsForCurrent);
+                    List<Set<Integer>> triosForCurrent = findTriosForCurrent(pairsForCurrent);
                     saveNewQuads(current, triosForCurrent);
 
                     if (!triosForCurrent.isEmpty()) {
@@ -39,7 +37,7 @@ public class PrimeSetFinder {
                     }
 
                     if (pairsForCurrent.size() > 3) {
-                        List<Set<Long>> quadsForCurrent = findQuadsForCurrent(pairsForCurrent);
+                        List<Set<Integer>> quadsForCurrent = findQuadsForCurrent(pairsForCurrent);
                         if (!quadsForCurrent.isEmpty()) {
                             saveNewPentas(current, quadsForCurrent);
                         }
@@ -51,101 +49,84 @@ public class PrimeSetFinder {
         return primePentas;
     }
 
-    private List<Long> findPairsForCurrent(long current) {
+    private List<Integer> findPairsForCurrent(int current) {
         return getLowerPrimes(current).stream()
-                .filter(prime -> areRemarkablePrimes(current, prime))
+                .filter(prime -> checker.areRemarkablePrimes(current, prime))
                 .collect(Collectors.toList());
     }
 
-    private List<Set<Long>> findDuosForCurrent(List<Long> pairsForCurrent) {
+    private List<Set<Integer>> findDuosForCurrent(List<Integer> pairsForCurrent) {
         return primePairs.stream()
                 .filter(pairsForCurrent::containsAll)
                 .collect(Collectors.toList());
     }
 
-    private List<Set<Long>> findTriosForCurrent(List<Long> pairsForCurrent) {
+    private List<Set<Integer>> findTriosForCurrent(List<Integer> pairsForCurrent) {
         return primeTrios.stream()
                 .filter(pairsForCurrent::containsAll)
                 .collect(Collectors.toList());
     }
 
-    private List<Set<Long>> findQuadsForCurrent(List<Long> pairsForCurrent) {
+    private List<Set<Integer>> findQuadsForCurrent(List<Integer> pairsForCurrent) {
         return primeQuads.stream()
                 .filter(pairsForCurrent::containsAll)
                 .collect(Collectors.toList());
     }
 
-    private void saveNewPairs(long current, List<Long> pairsForCurrent) {
+    private void saveNewPairs(int current, List<Integer> pairsForCurrent) {
         pairsForCurrent.forEach(prime -> primePairs.add(Set.of(current, prime)));
     }
 
-    private void saveNewTrios(long current, List<Set<Long>> duosForCurrent) {
+    private void saveNewTrios(int current, List<Set<Integer>> duosForCurrent) {
         duosForCurrent.forEach(pair -> {
-            Set<Long> trio = new HashSet<>(pair);
+            Set<Integer> trio = new HashSet<>(pair);
             trio.add(current);
             primeTrios.add(trio);
         });
     }
 
-    private void saveNewQuads(long current, List<Set<Long>> triosForCurrent) {
+    private void saveNewQuads(int current, List<Set<Integer>> triosForCurrent) {
         triosForCurrent.forEach(trio -> {
-            Set<Long> quad = new HashSet<>(trio);
+            Set<Integer> quad = new HashSet<>(trio);
             quad.add(current);
             primeQuads.add(quad);
         });
     }
 
-    private void saveNewPentas(long current, List<Set<Long>> quadsForCurrent) {
+    private void saveNewPentas(int current, List<Set<Integer>> quadsForCurrent) {
         quadsForCurrent.forEach(quad -> {
-            Set<Long> penta = new HashSet<>(quad);
+            Set<Integer> penta = new HashSet<>(quad);
             penta.add(current);
             primePentas.add(penta);
         });
     }
 
-    private List<Long> getLowerPrimes(long current) {
-        List<Long> primes = supplier.getPrimes();
+    private List<Integer> getLowerPrimes(int current) {
+        List<Integer> primes = supplier.getPrimes();
         return primes.stream().filter(prime -> prime < current).collect(Collectors.toList());
     }
 
-    private Long getNextPrime(int index) {
+    private int getNextPrime(int index) {
         if (supplier.getPrimes().isEmpty()) {
-            supplier.getAsLong();
+            supplier.get();
         }
         while (supplier.getPrimes().size() <= index) {
-            supplier.getAsLong();
+            supplier.get();
         }
         return supplier.getPrimes().get(index);
     }
 
-    public boolean isRemarkablePrimeGroup(List<Long> original) {
-        List<Long> primeGroup = new ArrayList<>(original);
+    public boolean isRemarkablePrimeGroup(List<Integer> original) {
+        List<Integer> primeGroup = new ArrayList<>(original);
         while (primeGroup.size() > 1) {
-            long current = primeGroup.remove(0);
-            for (long prime : primeGroup) {
-                if (!areRemarkablePrimes(current, prime)) {
+            int current = primeGroup.remove(0);
+            for (int prime : primeGroup) {
+                if (!checker.areRemarkablePrimes(current, prime)) {
                     return false;
                 }
             }
         }
         return true;
-    }
-
-    /*
-    Two primes are remarkable (considering this approach) if
-    both of their concatenated versions are primes as well.
-    E.g.: 7 and 3 -> the numbers 37 and 73 are also primes.
-     */
-    public boolean areRemarkablePrimes(Long a, Long b) {
-        if (EXCEPTIONS.contains(a) || EXCEPTIONS.contains(b)) {
-            return false;
-        }
-        long ab = Long.parseLong((a.toString() + b.toString()));
-        if (checker.isPrime(ab)) {
-            long ba = Long.parseLong((b.toString() + a.toString()));
-            return checker.isPrime(ba);
-        }
-        return false;
     }
 
     public static void main(String[] args) {
