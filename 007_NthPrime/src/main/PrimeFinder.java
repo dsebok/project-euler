@@ -6,9 +6,9 @@ public class PrimeFinder {
         PrimeSupplier supplier = new PrimeSupplier();
         int index = 1;
         while (index <= 10000) {
-            supplier.get();
+            supplier.getAsInt();
             ++index;
         }
-        System.out.println(supplier.get());
+        System.out.println(supplier.getAsInt());
     }
 }

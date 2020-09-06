@@ -24,7 +24,7 @@ public class PrimeChecker {
 
     public boolean isPrime(int number) {
         while (number > supplier.getCurrent()) {
-            supplier.get();
+            supplier.getAsInt();
         }
         return supplier.getPrimes().contains(number);
     }

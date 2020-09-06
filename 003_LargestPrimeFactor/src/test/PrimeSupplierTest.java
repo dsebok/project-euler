@@ -18,16 +18,16 @@ public class PrimeSupplierTest {
     public void testGetAsLongShouldGivePrimes() {
         //GIVEN in setup
         //WHEN
-        long actual1 = underTest.get();
-        long actual2 = underTest.get();
-        long actual3 = underTest.get();
-        long actual4 = underTest.get();
-        long actual5 = underTest.get();
-        long actual6 = underTest.get();
-        long actual7 = underTest.get();
-        long actual8 = underTest.get();
-        long actual9 = underTest.get();
-        long actual10 = underTest.get();
+        long actual1 = underTest.getAsInt();
+        long actual2 = underTest.getAsInt();
+        long actual3 = underTest.getAsInt();
+        long actual4 = underTest.getAsInt();
+        long actual5 = underTest.getAsInt();
+        long actual6 = underTest.getAsInt();
+        long actual7 = underTest.getAsInt();
+        long actual8 = underTest.getAsInt();
+        long actual9 = underTest.getAsInt();
+        long actual10 = underTest.getAsInt();
         //THEN
         assertEquals(2, actual1);
         assertEquals(3, actual2);

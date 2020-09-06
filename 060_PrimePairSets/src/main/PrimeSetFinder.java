@@ -108,10 +108,10 @@ public class PrimeSetFinder {
 
     private int getNextPrime(int index) {
         if (supplier.getPrimes().isEmpty()) {
-            supplier.get();
+            supplier.getAsInt();
         }
         while (supplier.getPrimes().size() <= index) {
-            supplier.get();
+            supplier.getAsInt();
         }
         return supplier.getPrimes().get(index);
     }

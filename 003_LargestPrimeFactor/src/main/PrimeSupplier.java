@@ -2,13 +2,15 @@ package main;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.IntSupplier;
 
-public class PrimeSupplier {
+public class PrimeSupplier implements IntSupplier {
 
     private int index = 0;
     private final List<Integer> primes = new ArrayList(List.of(2,3));
 
-    public int get() {
+    @Override
+    public int getAsInt() {
         primes.add(getNextPrime());
         return primes.get(index++);
     }
