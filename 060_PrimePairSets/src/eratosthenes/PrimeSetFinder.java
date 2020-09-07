@@ -14,14 +14,16 @@ public class PrimeSetFinder {
     private final List<Set<Integer>> primeTrios = new ArrayList<>();
     private final List<Set<Integer>> primeQuads = new ArrayList<>();
     private final List<Set<Integer>> primePentas = new ArrayList<>();
-    private final PrimesOfEratosthenes primes = new PrimesOfEratosthenes(10000000);
+    private final PrimeSupplier supplier = new PrimeSupplier();
+    private final PrimeChecker checker = new PrimeChecker(supplier);
 
     public List<Set<Integer>> findPentaPrimes() {
-        int index = 0;
+        int rndCounter = 0;
         while (primePentas.isEmpty()) {
-            int current = getNextPrime(index);
+            int current = supplier.getAsInt();
             List<Integer> pairsForCurrent = findPairsForCurrent(current);
             saveNewPairs(current, pairsForCurrent);
+            rndCounter++;
 
             if (pairsForCurrent.size() > 1) {
                 List<Set<Integer>> duosForCurrent = findBiggerSetsForCurrent(primePairs, pairsForCurrent);
@@ -31,11 +33,8 @@ public class PrimeSetFinder {
                     List<Set<Integer>> triosForCurrent = findBiggerSetsForCurrent(primeTrios, pairsForCurrent);
                     saveNewSets(current, triosForCurrent, primeQuads);
 
-                    if (!triosForCurrent.isEmpty()) {
-                        triosForCurrent.forEach(trio -> {
-                            trio.add(current);
-                            System.out.println(trio);
-                        });
+                    if (rndCounter % 10 == 0) {
+                        System.out.println(current);
                     }
 
                     if (pairsForCurrent.size() > 3) {
@@ -46,13 +45,12 @@ public class PrimeSetFinder {
                     }
                 }
             }
-            ++index;
         }
         return primePentas;
     }
 
     private List<Integer> findPairsForCurrent(int current) {
-        return getLowerPrimes(current).stream()
+        return supplier.getLowerPrimes(current).stream()
                 .filter(prime -> checker.areRemarkablePrimes(current, prime))
                 .collect(Collectors.toList());
     }
@@ -75,42 +73,13 @@ public class PrimeSetFinder {
         });
     }
 
-    private List<Integer> getLowerPrimes(int current) {
-        List<Integer> primes = supplier.getPrimes();
-        return primes.stream().takeWhile(prime -> prime < current).collect(Collectors.toList());
-    }
-
-    private int getNextPrime(int index) {
-        if (supplier.getPrimes().isEmpty()) {
-            supplier.getAsInt();
-        }
-        while (supplier.getPrimes().size() <= index) {
-            supplier.getAsInt();
-        }
-        return supplier.getPrimes().get(index);
-    }
-
-    public boolean isRemarkablePrimeGroup(List<Integer> original) {
-        List<Integer> primeGroup = new ArrayList<>(original);
-        while (primeGroup.size() > 1) {
-            int current = primeGroup.remove(0);
-            for (int prime : primeGroup) {
-                if (!checker.areRemarkablePrimes(current, prime)) {
-                    return false;
-                }
-            }
-        }
-        return true;
-    }
-
     public static void main(String[] args) {
         Instant start = Instant.now();
-        main.PrimeSetFinder finder = new main.PrimeSetFinder();
+        PrimeSetFinder finder = new PrimeSetFinder();
         System.out.println(finder.findPentaPrimes().get(0));
         Instant end = Instant.now();
         Duration duration = Duration.between(start, end);
         System.out.println(duration.toMillis());
     }
-    //[5701, 8389, 13, 5197, 6733]
-    //4482617 milliseconds
+
 }

@@ -29,13 +29,6 @@ public class PrimeSetFinder {
                     List<Set<Integer>> triosForCurrent = findBiggerSetsForCurrent(primeTrios, pairsForCurrent);
                     saveNewSets(current, triosForCurrent, primeQuads);
 
-                    if (!triosForCurrent.isEmpty()) {
-                        triosForCurrent.forEach(trio -> {
-                            trio.add(current);
-                            System.out.println(trio);
-                        });
-                    }
-
                     if (pairsForCurrent.size() > 3) {
                         List<Set<Integer>> quadsForCurrent = findBiggerSetsForCurrent(primeQuads, pairsForCurrent);
                         if (!quadsForCurrent.isEmpty()) {
