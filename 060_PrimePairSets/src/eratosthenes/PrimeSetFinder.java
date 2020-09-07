@@ -1,8 +1,11 @@
-package main;
+package eratosthenes;
 
 import java.time.Duration;
 import java.time.Instant;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 public class PrimeSetFinder {
@@ -11,8 +14,7 @@ public class PrimeSetFinder {
     private final List<Set<Integer>> primeTrios = new ArrayList<>();
     private final List<Set<Integer>> primeQuads = new ArrayList<>();
     private final List<Set<Integer>> primePentas = new ArrayList<>();
-    private final PrimeSupplier supplier = new PrimeSupplier();
-    private final PrimeChecker checker = new PrimeChecker(supplier);
+    private final PrimesOfEratosthenes primes = new PrimesOfEratosthenes(10000000);
 
     public List<Set<Integer>> findPentaPrimes() {
         int index = 0;
@@ -103,7 +105,7 @@ public class PrimeSetFinder {
 
     public static void main(String[] args) {
         Instant start = Instant.now();
-        PrimeSetFinder finder = new PrimeSetFinder();
+        main.PrimeSetFinder finder = new main.PrimeSetFinder();
         System.out.println(finder.findPentaPrimes().get(0));
         Instant end = Instant.now();
         Duration duration = Duration.between(start, end);

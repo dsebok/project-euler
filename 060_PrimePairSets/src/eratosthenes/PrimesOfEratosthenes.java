@@ -1,4 +1,4 @@
-package main;
+package eratosthenes;
 
 import java.time.Duration;
 import java.time.Instant;
