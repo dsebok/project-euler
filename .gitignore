@@ -1,11 +1,32 @@
+### Java ###
+
 # Compiled classes
-out
 *.class
 
-## IntelliJ IDEA
+
+### IntelliJ IDEA ###
+
+out
 
 # Modules
 *.iml
 
 # Workspace settings
 .idea
+
+
+### Eclipse specific files/directories ###
+
+bin/
+tmp/
+*.tmp
+*.bak
+*.swp
+*~.nib
+local.properties
+.loadpath
+.recommenders
+.classpath
+.project
+.settings
+.metadata
