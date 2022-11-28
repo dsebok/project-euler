@@ -1,11 +1,12 @@
 package test;
 
-import main.PrimeChecker;
-import main.PrimeSupplier;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+
+import eratosthenes.PrimeChecker;
+import eratosthenes.supplier.PrimeSupplier;
 
 public class PrimeCheckerTest {
 

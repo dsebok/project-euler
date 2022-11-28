@@ -1,11 +1,14 @@
 package test;
 
-import eratosthenes.PrimesOfEratosthenes;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import java.util.Set;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.util.List;
+import eratosthenes.supplier.PrimesOfEratosthenes;
 
 public class PrimesOfEratosthenesTest {
 
@@ -13,19 +16,23 @@ public class PrimesOfEratosthenesTest {
 
     @BeforeEach
     public void setUp() {
-        underTest = new PrimesOfEratosthenes(5000);
+        underTest = new PrimesOfEratosthenes();
     }
 
     @Test
     public void testGetForSeveralNumbers() {
         //GIVEN in setup
         //WHEN
-        List<Integer> actual = underTest.get();
+        Set<Integer> actual = underTest.getPrimes(20);
         //THEN
-        assertEquals(2, actual.get(0));
-        assertEquals(31, actual.get(10));
-        assertEquals(127, actual.get(30));
-        assertEquals(547, actual.get(100));
-        assertEquals(1999, actual.get(302));
+        assertEquals(8, actual.size());
+        assertTrue(actual.contains(2));
+        assertTrue(actual.contains(3));
+        assertTrue(actual.contains(5));
+        assertTrue(actual.contains(7));
+        assertTrue(actual.contains(11));
+        assertTrue(actual.contains(13));
+        assertTrue(actual.contains(17));
+        assertTrue(actual.contains(19));
     }
 }

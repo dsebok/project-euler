@@ -3,83 +3,102 @@ package eratosthenes;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import eratosthenes.supplier.PrimeSupplier;
+import eratosthenes.supplier.RemarkablePrimeSupplier;
+
+/**
+ * Exercise: https://projecteuler.net/problem=60
+ * @author Dave
+ *
+ */
 public class PrimeSetFinder {
 
-    private final List<Set<Integer>> primePairs = new ArrayList<>();
-    private final List<Set<Integer>> primeTrios = new ArrayList<>();
-    private final List<Set<Integer>> primeQuads = new ArrayList<>();
-    private final List<Set<Integer>> primePentas = new ArrayList<>();
-    private final PrimeSupplier supplier = new PrimeSupplier();
-    private final PrimeChecker checker = new PrimeChecker(supplier);
+	private static final int MIN_PAIR_NUMBER = 4;
+	private final PrimeSupplier supplier = new RemarkablePrimeSupplier();
+	private final PrimeChecker checker = new PrimeChecker(supplier);
 
-    public List<Set<Integer>> findPentaPrimes() {
-        int rndCounter = 0;
-        while (primePentas.isEmpty()) {
-            int current = supplier.getAsInt();
-            List<Integer> pairsForCurrent = findPairsForCurrent(current);
-            saveNewPairs(current, pairsForCurrent);
-            rndCounter++;
+	public static void main(String[] args) {
+		Instant start = Instant.now();
+		PrimeSetFinder finder = new PrimeSetFinder();
+		List<Integer> solution = finder.findPrimeGroup();
+		System.out.println(solution);
+		Instant end = Instant.now();
+		System.out.println(solution.stream().mapToInt(i -> i).sum());
+		Duration duration = Duration.between(start, end);
+		System.out.println(duration.toMillis());
+	}
 
-            if (pairsForCurrent.size() > 1) {
-                List<Set<Integer>> duosForCurrent = findBiggerSetsForCurrent(primePairs, pairsForCurrent);
-                saveNewSets(current, duosForCurrent, primeTrios);
+	public List<Integer> findPrimeGroup() {
+		Map<Integer, Set<Integer>> primePairs = new HashMap<>();
+		while (supplier.hasNext()) {
+			int current = supplier.getAsInt();
+			Set<Integer> lowerPairsForCurrent = findLowerPairsForCurrent(current, primePairs.keySet());
+			primePairs.put(current, lowerPairsForCurrent);
+			lowerPairsForCurrent.forEach(pair -> primePairs.get(pair).add(current));
+			if (lowerPairsForCurrent.size() >= MIN_PAIR_NUMBER) {
+				Optional<List<Integer>> solutionPairs = getSolutionPairs(primePairs, lowerPairsForCurrent);
+				if (solutionPairs.isPresent()) {
+					List<Integer> result = new ArrayList<>(solutionPairs.get());
+					result.add(current);
+					return result;
+				}
+			}
+		}
+		return List.of();
+	}
 
-                if (pairsForCurrent.size() > 2) {
-                    List<Set<Integer>> triosForCurrent = findBiggerSetsForCurrent(primeTrios, pairsForCurrent);
-                    saveNewSets(current, triosForCurrent, primeQuads);
+	private HashSet<Integer> findLowerPairsForCurrent(int current, Set<Integer> lowerPrimes) {
+		return lowerPrimes.stream()
+				.filter(prime -> checker.areRemarkablePrimes(current, prime))
+				.collect(Collectors.toCollection(HashSet::new));
+	}
 
-                    if (rndCounter % 10 == 0) {
-                        System.out.println(current);
-                    }
+	/**
+	 * 
+	 * @param primePairs - the map that contains the currently checked primes and their current pairs
+	 * @param lowerPairsForCurrent - all the lower primes that are pairs for the current prime
+	 * @return true if there are at least GROUP_SIZE - 1 primes amongst lowerPairsForCurrent that are all pairs to each other as well.
+	 */
+	private Optional<List<Integer>> getSolutionPairs(Map<Integer, Set<Integer>> primePairs, Set<Integer> lowerPairsForCurrent) {
+		List<List<Integer>> possibleRemarkableGroups = getCombinations(lowerPairsForCurrent);
+		return possibleRemarkableGroups.stream()
+				.filter(primeGroup -> groupIsRemarkable(primePairs, primeGroup))
+				.findAny();
+	}
 
-                    if (pairsForCurrent.size() > 3) {
-                        List<Set<Integer>> quadsForCurrent = findBiggerSetsForCurrent(primeQuads, pairsForCurrent);
-                        if (!quadsForCurrent.isEmpty()) {
-                            saveNewSets(current, quadsForCurrent, primePentas);
-                        }
-                    }
-                }
-            }
-        }
-        return primePentas;
-    }
+	private List<List<Integer>> getCombinations(Set<Integer> numbers) {
+		List<Integer> indexedNumbers = List.copyOf(numbers);
+		if (numbers.size() == MIN_PAIR_NUMBER) {
+			return List.of(indexedNumbers);
+		}
+		Combinator combinator = new Combinator(numbers.size(), MIN_PAIR_NUMBER);
+		List<List<Integer>> indexCombos = combinator.getCombinations();
+		return mapIndicesToElements(indexCombos, indexedNumbers);
+	}
 
-    private List<Integer> findPairsForCurrent(int current) {
-        return supplier.getLowerPrimes(current).stream()
-                .filter(prime -> checker.areRemarkablePrimes(current, prime))
-                .collect(Collectors.toList());
-    }
+	private List<List<Integer>> mapIndicesToElements(List<List<Integer>> indexCombos, List<Integer> indexedNumbers) {
+		return indexCombos.stream()
+				.map(indexCombo -> indexCombo.stream()
+						.map(index -> indexedNumbers.get(index))
+						.toList())
+				.toList();
+	}
 
-    private List<Set<Integer>> findBiggerSetsForCurrent(List<Set<Integer>> primeSet, List<Integer> pairsForCurrent) {
-        return primeSet.stream()
-                .filter(pairsForCurrent::containsAll)
-                .collect(Collectors.toList());
-    }
-
-    private void saveNewPairs(int current, List<Integer> pairsForCurrent) {
-        pairsForCurrent.forEach(prime -> primePairs.add(Set.of(current, prime)));
-    }
-
-    private void saveNewSets(int current, List<Set<Integer>> setsForCurrent, List<Set<Integer>> container) {
-        setsForCurrent.forEach(set -> {
-            Set<Integer> biggerSet = new HashSet<>(set);
-            biggerSet.add(current);
-            container.add(biggerSet);
-        });
-    }
-
-    public static void main(String[] args) {
-        Instant start = Instant.now();
-        PrimeSetFinder finder = new PrimeSetFinder();
-        System.out.println(finder.findPentaPrimes().get(0));
-        Instant end = Instant.now();
-        Duration duration = Duration.between(start, end);
-        System.out.println(duration.toMillis());
-    }
-
+	private boolean groupIsRemarkable(Map<Integer, Set<Integer>> primePairs, List<Integer> primeGroup) {
+		return primeGroup.stream()
+				.allMatch(prime -> {
+					Set<Integer> pairsOfPrime = primePairs.get(prime);
+					Set<Integer> groupWithoutCurrent = new HashSet<>(primeGroup);
+					groupWithoutCurrent.remove(prime);
+					return pairsOfPrime.containsAll(groupWithoutCurrent);
+				});
+	}
 }
