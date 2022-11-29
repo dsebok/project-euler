@@ -16,7 +16,7 @@ import eratosthenes.supplier.RemarkablePrimeSupplier;
 
 /**
  * Exercise: https://projecteuler.net/problem=60
- * @author Dave
+ * @author Depiphron
  *
  */
 public class PrimeSetFinder {

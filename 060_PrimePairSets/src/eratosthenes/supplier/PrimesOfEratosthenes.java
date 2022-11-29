@@ -3,6 +3,7 @@ package eratosthenes.supplier;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.LinkedHashSet;
 import java.util.Set;
 import java.util.function.Supplier;
@@ -13,7 +14,7 @@ public class PrimesOfEratosthenes {
 	/**
 	 * @return a List that contains all the primes under the limit.
 	 */
-	public Set<Integer> getPrimes(int limit) {
+	public LinkedHashSet<Integer> getPrimes(int limit) {
 		int[] sieve = getPrefilteredSieve(limit);
 		crossOutNonPrimes(limit, sieve);
 		return extractNonZeroNumbers(sieve);
@@ -54,7 +55,7 @@ public class PrimesOfEratosthenes {
 	/**
 	 * @return a List containing only the non-zero numbers from the given sieve.
 	 */
-	private Set<Integer> extractNonZeroNumbers(int[] numbers) {
+	private LinkedHashSet<Integer> extractNonZeroNumbers(int[] numbers) {
 		return Arrays.stream(numbers)
 				.filter(number -> number != 0)
 				.boxed()
@@ -63,7 +64,7 @@ public class PrimesOfEratosthenes {
 
 	public static void main(String[] args) {
 		PrimesOfEratosthenes primes = new PrimesOfEratosthenes();
-		Set<Integer> primeList = (Set<Integer>) benchmark(() -> primes.getPrimes(100_000_000));
+		Collection<Integer> primeList = (Collection<Integer>) benchmark(() -> primes.getPrimes(100_000_000));
 		benchmark(() -> primeList.contains(99999989));
 		System.out.println();
 		// Lowest duration for limit 100_000_000: 863 ms
@@ -74,7 +75,7 @@ public class PrimesOfEratosthenes {
 		Object result = supplier.get();
 		Instant end = Instant.now();
 		Duration duration = Duration.between(start, end);
-		System.out.println(duration.toMillis());
+		System.out.println(duration.toNanos());
 		return result;
 	}
 }

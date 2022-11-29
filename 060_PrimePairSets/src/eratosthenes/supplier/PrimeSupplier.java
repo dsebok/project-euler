@@ -1,12 +1,12 @@
 package eratosthenes.supplier;
 
 import java.util.Iterator;
-import java.util.Set;
+import java.util.LinkedHashSet;
 import java.util.function.IntSupplier;
 
 public class PrimeSupplier implements IntSupplier {
 
-    private final Set<Integer> primes = new PrimesOfEratosthenes().getPrimes(100_000_000);
+    private final LinkedHashSet<Integer> primes = new PrimesOfEratosthenes().getPrimes(100_000_000);
     protected Iterator<Integer> iterator = primes.iterator();
 
     @Override
