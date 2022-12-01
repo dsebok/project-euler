@@ -36,6 +36,9 @@ public class PrimesOfEratosthenes {
 	 * and the limit.
 	 * The crossing is intentionally started from the square of the crosser prime, because below that
 	 * there are only multiples of lesser primes that have already been checked.
+	 * 
+	 * @param limit - there are only values in the prefilteredSieve under this limit
+	 * @param prefilteredSieve
 	 */
 	private void crossOutNonPrimes(int limit, int[] prefilteredSieve) {
 		int crossIndexLimit = (int) Math.sqrt(limit) / 2;

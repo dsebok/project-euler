@@ -1,7 +1,6 @@
 package test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.Set;
 
@@ -25,14 +24,6 @@ public class PrimesOfEratosthenesTest {
         //WHEN
         Set<Integer> actual = underTest.getPrimes(20);
         //THEN
-        assertEquals(8, actual.size());
-        assertTrue(actual.contains(2));
-        assertTrue(actual.contains(3));
-        assertTrue(actual.contains(5));
-        assertTrue(actual.contains(7));
-        assertTrue(actual.contains(11));
-        assertTrue(actual.contains(13));
-        assertTrue(actual.contains(17));
-        assertTrue(actual.contains(19));
+        assertEquals(Set.of(2, 3, 5, 7, 11, 13, 17, 19), actual);
     }
 }
